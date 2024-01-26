@@ -15,7 +15,7 @@ router.get('/balance',authMiddleware,async (req,res)=>{
     res.status(200).json({
         "balance": userAccount.balance
     })       
-})
+}) 
 
 router.post('/transfer',authMiddleware,async (req,res)=>{
     const to = req.body.to;

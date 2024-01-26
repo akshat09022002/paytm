@@ -38,7 +38,6 @@ router.post('/signup',async (req,res)=>{
     if(response.success){
 
         const checkUser= await signup.findOne({username:username});
-        console.log(checkUser)
         if(checkUser){
            return  res.status(411).json({
                 "msg": "User Already Exists"
@@ -85,7 +84,8 @@ router.post('/signin',async (req,res)=>{
         if(user){
             const token=jwt.sign({userId:user._id},JWT_SECRET);
             return res.json({
-                "token":token
+                "token":token,
+                "name":user.firstName
             })
         }
 
@@ -136,7 +136,7 @@ router.get('/bulk',async(req,res)=>{
     })
 
     res.json({
-        "user " : users.map((user)=>{
+        "user" : users.map((user)=>{
            return{ username : user.username,
             firstName : user.firstName,
             lastName : user.lastName,
