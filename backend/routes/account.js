@@ -34,6 +34,12 @@ router.post('/transfer',authMiddleware,async (req,res)=>{
             "msg":"Invalid Account"
         })
     }
+    else if(amount<0){
+        await session.abortTransaction();
+        return res.status(400).json({
+            "msg":"Enter a valid amount"
+        })
+    }
     else if(account.balance<amount){
         await session.abortTransaction();
         return res.status(400).json({

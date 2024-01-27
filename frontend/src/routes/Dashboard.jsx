@@ -6,25 +6,48 @@ import { useEffect, useState } from "react";
 export function Dashboard(){
     const navigate=useNavigate();
 
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-    const name=queryParams.get('name').toUpperCase();
+    const name=localStorage.getItem("name").toUpperCase();
     
 
     const [user,setUser]=useState([]);
+    const [balance,setBalance]=useState('');
+    const storedToken = localStorage.getItem("token");
 
     useEffect(()=>{
         fetch(`http://localhost:3000/api/v1/user/bulk`).then(async(response)=>{
             const data=await response.json();
             setUser(data.user);
-        })
-    },[])
+        });
 
+        fetch('http://localhost:3000/api/v1/account/balance',{
+            headers:{
+                "Content-type": "application/json",
+                "authorization":storedToken
+            }
+        }).then(async(response)=>{
+            const data=await response.json();
+            setBalance(data.balance);
+        })
+
+        setInterval(async()=>{
+            await fetch('http://localhost:3000/api/v1/account/balance',{
+            headers:{
+                "Content-type": "application/json",
+                "authorization":storedToken
+            }
+        }).then(async(response)=>{
+            const data=await response.json();
+            setBalance(data.balance);
+        })
+        },10000);
+        
+
+    },[])
 
     return <div>
         <div className="flex justify-between p-4 border-b-[1px] border-gray-400">
             <div>
-                <h1 className="text-xl">CumPay</h1>
+                <h1 className="text-2xl font-bold">CashFlow</h1>
             </div>
             <div className="flex items-center">
                 <h1 className="text-xl">Hello, {name}</h1>
@@ -32,7 +55,7 @@ export function Dashboard(){
             </div>
         </div>
         <div className="p-5">
-            <h1 className="text-2xl"><b>Your Balance: $10000</b></h1>
+            <h1 className="text-2xl"><b>Your Balance: ₹{balance=='' ? '...loading' : balance.toFixed(3)}</b></h1>
         </div>
         <div>
             <h1 className="text-xl px-5"><b>Users</b></h1>
@@ -48,10 +71,15 @@ export function Dashboard(){
         </div>
         <div>
             {user.map((usr)=>{
+                if(usr.username!=localStorage.getItem('username')){
                 return <div className="flex justify-between pt-4 p-3 border-b-2">
-                    <div>{usr.firstName + " " + usr.lastName}</div>
-                    <div><button className="border-2 px-1 py-0.5 bg-black text-white rounded-md" onClick={()=>{}}>Send Money</button></div>
+                    <div>{usr.firstName.toUpperCase() + " " + usr.lastName.toUpperCase()}</div>
+                    <div><button className="border-2 px-1 py-0.5 bg-black text-white rounded-md" onClick={()=>{
+                        localStorage.setItem("to",usr._id);
+                        navigate('/Payments');
+                    }}>Send Money</button></div>
                 </div>
+                }
             })}
         </div>
     </div>

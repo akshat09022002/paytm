@@ -34,7 +34,10 @@ export function Signin(){
             }).then(async (response)=>{
                 const data= await response.json();
                 if(data.token){
-                    navigate(`/dashboard?token=${data.token}&name=${data.name}`);
+                    localStorage.setItem("token",data.token);
+                    localStorage.setItem("name",data.name);
+                    localStorage.setItem("username",data.username);
+                    navigate(`/dashboard`);
                 }
                 else{
                     alert('Invalid Login Credentials');
@@ -42,4 +45,4 @@ export function Signin(){
             })
         }}>Submit</button>
     </div>
-}
+} 

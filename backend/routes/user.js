@@ -85,11 +85,12 @@ router.post('/signin',async (req,res)=>{
             const token=jwt.sign({userId:user._id},JWT_SECRET);
             return res.json({
                 "token":token,
-                "name":user.firstName
-            })
+                "name":user.firstName,
+                "username":user.username
+            }) 
         }
 
-        else{
+        else{ 
             return res.status(411).json({
                 "msg": "No user exists! Please sign up"
             })
