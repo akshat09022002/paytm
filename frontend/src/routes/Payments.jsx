@@ -10,7 +10,7 @@ export function Payments(){
     const [amount,setAmount] = useState("");
 
     return<div className="flex flex-col h-screen items-center justify-center">
-        <h1 className="mb-2 text-xl ">CumPay Portal</h1>
+        <h1 className="mb-2 text-xl ">CashFlow Portal</h1>
         <input onChange={(e)=>{
             const value=e.target.value;
             setAmount(value);
